@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
+#include <unistd.h>
 void inicio(void);
 void jogo(char jg1[], char jg2[]);
 
@@ -22,6 +22,8 @@ int main(void) {
         inicio();
     } else {
         puts("Talvez na próxima!");
+        sleep(2.5);
+        exit(1);
     }
 
     return 0;
