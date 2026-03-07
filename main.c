@@ -14,7 +14,7 @@ void descriptografar(char *dados, int tamanho, int chave);
 
 int main(void) {
     srand(time(NULL));
-    puts("Hello!\n-----------------------\nBem vindo ao jogo das condenações!");
+    puts("-----------------------\nBem vindo ao jogo das condenações!");
     
     char resposta[10];
     puts("Deseja começar o jogo? (Sim/Nao)");
