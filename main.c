@@ -71,7 +71,7 @@ void jogo(char jg1[], char jg2[]) {
 
 void avaliacao() {
     char pergunta[10];
-    printf("\nGostaria de deixar o seu feedback? (sim/nao): ");
+    printf("\nGostaria de deixar o seu feedback? Ele será enviado para o canal de registro de avaliações, no nosso servidor do Discord®. (sim/nao): ");
     scanf("%9s", pergunta); 
     int c;
     while ((c = getchar()) != '\n' && c != EOF); // Limpa buffer
@@ -84,6 +84,13 @@ void avaliacao() {
         disparar_webhook(feedback);
     } else {
         puts("Ok, muito obrigado por testar!");
+        sleep(1);
+        puts("Se quiser Entrar no nosso servidor do Discord®, acesse o link: https://discord.gg/BK6yxFrCTb");
+        sleep(3);
+        puts("Desde já, agradecemos por jogar o nosso jogo!");
+        puts("Até a próxima!");
+        sleep(4);
+        exit(1);
     }
 }
 
@@ -125,7 +132,7 @@ void disparar_webhook(char *texto) {
             strftime(horario, sizeof(horario), "%d/%m/%Y %H:%M:%S", tm_info);
 
             snprintf(json, sizeof(json),
-                     "{\"content\": \"🎮 **Novo Feedback!**\\n**Mensagem:** %s\\n🕒 %s\"}",
+                     "{\"content\": \"🎮 **New Feedback!!**\\n**Mesage:** %s\\n🕒 %s\"}",
                      texto, horario);
 
             struct curl_slist *headers = NULL;
