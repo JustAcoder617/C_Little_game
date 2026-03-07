@@ -134,4 +134,4 @@ void disparar_webhook(char *texto) {
         }
     }
     fclose(f);
-}
+}//
