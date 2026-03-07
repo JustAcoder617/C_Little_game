@@ -28,7 +28,6 @@ int main(void) {
         sleep(2);
         exit(1);
     }
-
     avaliacao();
     return 0;
 }
@@ -75,6 +74,17 @@ void jogo(char jg1[], char jg2[]) {
 }
 
 void avaliacao() {
+    puts("\n Gostaria de deixar o seu feedback para o nosso jogo? (o seu feedback será enviado ao nosso canal de feedbacks no discord, onde iremos avaliar e tomar as medidas acarretadas.)?");
+    char pergunta[4];
+    scanf("%4s", &pergunta);
+    if (strcmp(pergunta, "sim")==0){
+        puts("Ok, começando avaliação...");
+        sleep(2);
+        continue;
+    }
+    else{
+        puts("Ok, muito obrigado por testar nosso game!! se quiser entrar no nosso servidor do discord: ")
+    }
     char feedback[500];
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
