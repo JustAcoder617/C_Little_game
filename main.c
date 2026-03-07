@@ -84,6 +84,7 @@ void avaliacao(char *user_login) {
         printf("\nO que achou do jogo? ");
         fgets(feedback, sizeof(feedback), stdin);
         feedback[strcspn(feedback, "\n")] = 0;
+        puts("Enviando resposta...");
         disparar_webhook(feedback, user_login);
     } else {
         puts("Até a próxima!");
@@ -139,6 +140,7 @@ void disparar_webhook(char *texto, char *user_login) {
             res = curl_easy_perform(curl);
             curl_easy_cleanup(curl);
             curl_slist_free_all(headers);
+            puts("Muito obrigado por enviar seu feedback! assim iremos melhorar nosso software!.");
         }
     }
 }
