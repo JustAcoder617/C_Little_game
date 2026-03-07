@@ -80,10 +80,9 @@ void avaliacao() {
     if (strcmp(pergunta, "sim")==0){
         puts("Ok, começando avaliação...");
         sleep(2);
-        continue;
     }
     else{
-        puts("Ok, muito obrigado por testar nosso game!! se quiser entrar no nosso servidor do discord: ")
+        puts("Ok, muito obrigado por testar nosso game!! se quiser entrar no nosso servidor do discord: ");
     }
     char feedback[500];
     int c;
