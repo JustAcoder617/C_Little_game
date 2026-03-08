@@ -40,7 +40,7 @@ static inline int Expressao(int n1, int n2, char operaçao[]){
         return resultado;
     }
     else{
-        perror("Operação inválida.")
+        perror("Operação inválida.");
     }
 }
 #endif
