@@ -1,5 +1,5 @@
-#ifndef simple_math_H
-#define simple_math_H
+#ifndef SIMPLE_MATH_H
+#define SIMPLE_MATH_H
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
