@@ -51,29 +51,52 @@ void inicio(char *user_login) {
 
 void jogo(char jg1[], char jg2[], char *user_login) {
     int jg1vivo = 1, jg2vivo = 1, turno = 1;
+    
+    // Lista de frases para quando o martelo falha
+    const char *frases_falha[] = {
+        "O martelo falhou... O réu escapou por pouco!",
+        "Sentença anulada por falta de provas.",
+        "O juiz se distrai e o martelo erra o alvo!",
+        "O martelo quebrou no meio do caminho..."
+    };
+    int num_frases = sizeof(frases_falha) / sizeof(frases_falha[0]);
+
     while (jg1vivo && jg2vivo) {
-        printf("\n--- Vez de %s ---\n1. Condenar | 2. Passar\n", (turno == 1) ? jg1 : jg2);
+        char *atual = (turno == 1) ? jg1 : jg2;
+        char *alvo = (turno == 1) ? jg2 : jg1;
+
+        printf("\n--- Vez de %s ---\n1. Condenar | 2. Passar\n", atual);
         int choice;
         if (scanf("%d", &choice) != 1) {
             while (getchar() != '\n'); 
             continue;
         }
+
         if (choice == 1) {
             printf("O martelo esta caindo");
-            for(int i = 0; i < 3; i++) { printf("."); fflush(stdout); usleep(500000); }
-            
-            // Ajustado para 10% de chance de sucesso (0 a 9)
-            if ((rand() % 10) == 0) {
-                printf("\n💥 CONDENAÇÃO ACEITA! %s GANHOU!\n", (turno == 1) ? jg1 : jg2);
+            for(int i = 0; i < 3; i++) { 
+                printf("."); 
+                fflush(stdout); 
+                usleep(500000); 
+            }
+
+            // Lógica de chance: 25% de chance de sucesso (1 em 4)
+            int sorteio = rand() % 4; 
+
+            if (sorteio == 0) { // SIM (Sucesso na condenação)
+                printf("\n💥 %s CONDENOU %s COM SUCESSO!\n", atual, alvo);
                 if (turno == 1) jg2vivo = 0; else jg1vivo = 0;
-            } else {
-                puts("\nO martelo falhou...");
+            } else { // NÃO (Falha)
+                int msg_idx = rand() % num_frases;
+                printf("\n❌ %s\n", frases_falha[msg_idx]);
                 turno = (turno == 1) ? 2 : 1;
             }
         } else {
+            puts("Passando a vez e limpando o processo...");
             turno = (turno == 1) ? 2 : 1;
         }
     }
+    printf("\n--- FIM DE JOGO ---\nVitória garantida! Voltando para avaliação...\n");
 }
 
 void avaliacao(char *user_login) {
@@ -81,7 +104,6 @@ void avaliacao(char *user_login) {
     printf("\nGostaria de deixar o seu feedback, %s? (sim/nao): ", user_login);
     scanf("%9s", pergunta); 
     
-    // Limpar buffer do teclado
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 
@@ -96,7 +118,7 @@ void avaliacao(char *user_login) {
         scanf("%d", &stars);
         
         puts("Enviando resposta...");
-        disparar_webhook(feedback, user_login, stars); // Passando stars como valor
+        disparar_webhook(feedback, user_login, stars);
     } else {
         puts("Até a próxima!");
         sleep(2);
@@ -105,7 +127,6 @@ void avaliacao(char *user_login) {
 
 void descriptografar(char *dados, int tamanho, int chave) {
     for(int i = 0; i < tamanho; i++) {
-        // Ignora terminadores de linha antes de descriptografar
         if(dados[i] == '\n' || dados[i] == '\r') {
             dados[i] = '\0';
             break;
@@ -120,7 +141,7 @@ void disparar_webhook(char *texto, char *user_login, int pontos) {
 
     FILE *f = fopen("hard_assets/config.txt", "rb");
     if (!f) {
-        puts("Erro: Arquivo de configuração não encontrado.");
+        puts("Erro: Arquivo 'hard_assets/config.txt' não encontrado.");
         return;
     }
 
