@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <curl/curl.h>
 
+// Protótipos
 void inicio(char *user_login);
 void jogo(char jg1[], char jg2[], char *user_login);
 void avaliacao(char *user_login);
@@ -29,8 +30,9 @@ int main(void) {
     } else {
         puts("Talvez na próxima!");
         sleep(2);
-        exit(1);
+        exit(0);
     }
+    
     avaliacao(user_login);
     return 0;
 }
@@ -59,7 +61,9 @@ void jogo(char jg1[], char jg2[], char *user_login) {
         if (choice == 1) {
             printf("O martelo esta caindo");
             for(int i = 0; i < 3; i++) { printf("."); fflush(stdout); usleep(500000); }
-            if ((rand() % 4) == 0) {
+            
+            // Ajustado para 10% de chance de sucesso (0 a 9)
+            if ((rand() % 10) == 0) {
                 printf("\n💥 CONDENAÇÃO ACEITA! %s GANHOU!\n", (turno == 1) ? jg1 : jg2);
                 if (turno == 1) jg2vivo = 0; else jg1vivo = 0;
             } else {
@@ -74,8 +78,10 @@ void jogo(char jg1[], char jg2[], char *user_login) {
 
 void avaliacao(char *user_login) {
     char pergunta[10];
-    printf("\nGostaria de deixar o seu feedback, %s? A sua avaliação será enviada para o nosso servidor do discord, onde será armazenada em uma cannal de texto e lida pelos devs, fazendo assim a melhoria do nosso jogo (o seu nome aqui registrado irá junto a avaliação).(sim/nao): ", user_login);
+    printf("\nGostaria de deixar o seu feedback, %s? (sim/nao): ", user_login);
     scanf("%9s", pergunta); 
+    
+    // Limpar buffer do teclado
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 
@@ -84,20 +90,22 @@ void avaliacao(char *user_login) {
         printf("\nO que achou do jogo? ");
         fgets(feedback, sizeof(feedback), stdin);
         feedback[strcspn(feedback, "\n")] = 0;
+        
         int stars;
-        puts("Em uma escala de 0/10, quanto você recomendaria o nosso jogo?");
+        puts("Em uma escala de 0 a 10, quanto você recomendaria o nosso jogo?");
         scanf("%d", &stars);
+        
         puts("Enviando resposta...");
-        disparar_webhook(feedback, user_login, &stars);
+        disparar_webhook(feedback, user_login, stars); // Passando stars como valor
     } else {
         puts("Até a próxima!");
         sleep(2);
-        exit(0);
     }
 }
 
 void descriptografar(char *dados, int tamanho, int chave) {
     for(int i = 0; i < tamanho; i++) {
+        // Ignora terminadores de linha antes de descriptografar
         if(dados[i] == '\n' || dados[i] == '\r') {
             dados[i] = '\0';
             break;
@@ -111,7 +119,10 @@ void disparar_webhook(char *texto, char *user_login, int pontos) {
     CURLcode res;
 
     FILE *f = fopen("hard_assets/config.txt", "rb");
-    if (!f) return;
+    if (!f) {
+        puts("Erro: Arquivo de configuração não encontrado.");
+        return;
+    }
 
     char url_encriptada[512];
     size_t n = fread(url_encriptada, 1, sizeof(url_encriptada) - 1, f);
@@ -130,7 +141,7 @@ void disparar_webhook(char *texto, char *user_login, int pontos) {
             strftime(horario, sizeof(horario), "%d/%m/%Y %H:%M:%S", tm_info);
 
             snprintf(json, sizeof(json),
-                     "{\"content\": \"🎮 **New Feedback!!**\\n**User:** `%s`\\n**Message:** %s\\n🕒 %s \\n user_avaliation:%i\"}",
+                     "{\"content\": \"🎮 **New Feedback!!**\\n**User:** `%s`\\n**Message:** %s\\n🕒 %s \\n**Rating:** %i/10\"}",
                      user_login, texto, horario, pontos);
 
             struct curl_slist *headers = NULL;
@@ -141,9 +152,14 @@ void disparar_webhook(char *texto, char *user_login, int pontos) {
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
             res = curl_easy_perform(curl);
+            if(res != CURLE_OK) {
+                fprintf(stderr, "Erro no envio: %s\n", curl_easy_strerror(res));
+            } else {
+                puts("Muito obrigado por enviar seu feedback!");
+            }
+
             curl_easy_cleanup(curl);
             curl_slist_free_all(headers);
-            puts("Muito obrigado por enviar seu feedback! assim iremos melhorar nosso software!.");
         }
     }
 }
