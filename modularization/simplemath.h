@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 static inline int Expressao(int n1, int n2, char operacao[]) {
     
     if (strcmp(operacao, "su") == 0) return n1 - n2;
@@ -73,7 +74,9 @@ static inline double clamp(double v, double min, double max){
 static inline double min_max(double a,double b){
     return (a < b) ? a : b;
 }
-static inline char* string_aleatoria_char(char* lista){
-    
+static inline char char_aleatorio(const char* lista, const int numero_escolhas) {
+    if (!lista || strlen(lista) == 0) return '\0';
+    int index = rand() % numero_escolhas;
+    return lista[index];
 }
 #endif
