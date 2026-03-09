@@ -3,7 +3,7 @@
 
 #include <string.h>
 #include <stdio.h>
-
+#include <math.h>
 static inline int Expressao(int n1, int n2, char operacao[]) {
     
     if (strcmp(operacao, "su") == 0) return n1 - n2;
