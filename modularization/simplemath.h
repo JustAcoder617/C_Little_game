@@ -73,4 +73,7 @@ static inline double clamp(double v, double min, double max){
 static inline double min_max(double a,double b){
     return (a < b) ? a : b;
 }
+static inline char* string_aleatoria_char(char* lista){
+    
+}
 #endif
