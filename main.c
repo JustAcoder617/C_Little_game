@@ -127,7 +127,7 @@ void jogo(char jg1[], char jg2[], char *user_login) {
             turno = (turno == 1) ? 2 : 1;
         }
     }
-    printf("\n--- FIM DE JOGO ---\nVoltando para avaliação...\n");
+    printf("\n----- FIM DE JOGO ------\nVoltando para avaliação...\n");
 }
 
 void avaliacao(char *user_login) {
