@@ -5,12 +5,12 @@
 #include <unistd.h>
 #include <curl/curl.h>
 #include "modularization/cweb.h"
+#include "modularization/simplemath.h"
 
 /* * Copyright (C) 2024 - Jogo das Condenações 
  * Licença: GPLv2
  */
 
-// Protótipos das funções que ficaram no main.c
 void inicio(char *user_login);
 void jogo(char jg1[], char jg2[], char *user_login);
 void avaliacao(char *user_login);
@@ -18,7 +18,7 @@ void avaliacao(char *user_login);
 int main(void) {
     srand(time(NULL));
     char user_login[50];
-    
+
     puts("-----------------------\nBem vindo ao jogo das condenações!");
     printf("Digite seu username de desenvolvedor/jogador: ");
     scanf("%49s", user_login);
@@ -32,9 +32,8 @@ int main(void) {
         inicio(user_login);
     } else {
         puts("Talvez na próxima!");
-        puts("Dica: O placar estará disponível na próxima atualização de modularização.");
     }
-    
+
     avaliacao(user_login);
     return 0;
 }
@@ -53,14 +52,13 @@ void inicio(char *user_login) {
 
 void jogo(char jg1[], char jg2[], char *user_login) {
     int jg1vivo = 1, jg2vivo = 1, turno = 1;
-    
+
     const char *frases_falha[] = {
         "O martelo falhou... O réu escapou por pouco!",
         "Sentença anulada por falta de provas.",
         "O juiz se distrai e o martelo erra o alvo!",
         "O martelo quebrou no meio do caminho..."
     };
-    int num_frases = sizeof(frases_falha) / sizeof(frases_falha[0]);
 
     while (jg1vivo && jg2vivo) {
         char *atual = (turno == 1) ? jg1 : jg2;
@@ -81,29 +79,62 @@ void jogo(char jg1[], char jg2[], char *user_login) {
                 usleep(500000); 
             }
 
-            int sorteio = rand() % 4; 
+            int sorteio = rand() % 5; 
 
-            if (sorteio == 0) {
-                printf("\n💥 %s CONDENOU %s COM SUCESSO!\n", atual, alvo);
-                if (turno == 1) jg2vivo = 0; else jg1vivo = 0;
-            } else {
-                int msg_idx = rand() % num_frases;
-                printf("\n❌ %s\n", frases_falha[msg_idx]);
-                turno = (turno == 1) ? 2 : 1;
+            if (sorteio == 4) { 
+                char possibilidades[] = {'s','s','s','s'}; 
+                char escolha = char_aleatorio(possibilidades, 1);
+                if (escolha == 's') {
+                    printf("\n%s foi condenado sumariamente! %s vence!\n", alvo, atual);
+                    if (turno == 1) jg2vivo = 0; else jg1vivo = 0;
+                }
+            } 
+            else if (sorteio == 3) {
+                char possibilidades[] = {'s','s','s','n'};
+                sleep(1);
+                char escolha = char_aleatorio(possibilidades, 1);
+                if (escolha == 's') {
+                    printf("\n%s CONDENOU %s no detalhe!!!!\n", atual, alvo);
+                    if (turno == 1) jg2vivo = 0; else jg1vivo = 0;
+                } else {
+                    printf("\n%s\n", frases_falha[rand() % 4]);
+                }
             }
+            else if (sorteio == 2) {
+                char possibilidades[] = {'s','s','n','n'}; 
+                char escolha = char_aleatorio(possibilidades, 1);
+                if (escolha == 's') {
+                    printf("\n%s CONDENOU %s no detalhe!!!!\n", atual, alvo);
+                    if (turno == 1) jg2vivo = 0; else jg1vivo = 0;
+                } else {
+                    printf("\n%s\n", frases_falha[rand() % 4]);
+                }
+            }
+            else if (sorteio == 1) {
+                char possibilidades[] = {'s','n','n','n'}; 
+                char escolha = char_aleatorio(possibilidades, 1);
+                if (escolha == 's') {
+                    printf("\n%s CONDENOU %s no detalhe!!!!\n", atual, alvo);
+                    if (turno == 1) jg2vivo = 0; else jg1vivo = 0;
+                } else {
+                    printf("\n%s\n", frases_falha[rand() % 4]);
+                }
+            }
+
+            turno = (turno == 1) ? 2 : 1;
         } else {
-            puts("Passando a vez e limpando o processo...");
+            puts("Passando a vez...");
             turno = (turno == 1) ? 2 : 1;
         }
     }
-    printf("\n--- FIM DE JOGO ---\nVitória garantida! Voltando para avaliação...\n");
+    printf("\n--- FIM DE JOGO ---\nVoltando para avaliação...\n");
 }
 
 void avaliacao(char *user_login) {
     char pergunta[10];
     printf("\nGostaria de deixar o seu feedback, %s? (sim/nao): ", user_login);
     scanf("%9s", pergunta); 
-    
+
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 
@@ -112,15 +143,13 @@ void avaliacao(char *user_login) {
         printf("\nO que achou do jogo? ");
         fgets(feedback, sizeof(feedback), stdin);
         feedback[strcspn(feedback, "\n")] = 0;
-        
+
         int stars;
-        puts("Em uma escala de 0 a 10, quanto você recomendaria o nosso jogo?");
+        puts("De 0 a 10, qual sua nota?");
         scanf("%d", &stars);
-        
-        puts("Enviando resposta...");
+
         disparar_webhook(feedback, user_login, stars);
     } else {
         puts("Até a próxima!");
-        sleep(2);
     }
 }
