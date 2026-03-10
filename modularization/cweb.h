@@ -78,7 +78,7 @@ static inline int disparar_webhook(char *texto, char *user_login, int pontos) {
 
             curl_easy_cleanup(curl);
             curl_slist_free_all(headers);
-            return 1; // Sucesso
+            return 0; // Sucesso
         }
     }
     return 0;
