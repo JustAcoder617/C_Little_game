@@ -8,7 +8,7 @@ const openLink = (url) => {
 
 // Eventos
 repoBtn.addEventListener("click", () => {
-    openLink('https://github.com/JustAcoder617/Whispers-of-Condemnation/blob/main/modularization/cweb.h');
+    openLink('https://github.com/JustAcoder617/Whispers-of-Condemnation');
 });
 
 personBtn.addEventListener("click", () => {
