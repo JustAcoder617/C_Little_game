@@ -1,10 +1,16 @@
-const button=document.getElementById("repo");
-function onrepo(){
-    window.location.href='https://github.com/JustAcoder617/Whispers-of-Condemnation/blob/main/modularization/cweb.h'
-}
-button.addEventListener("click", onrepo);
-function onperson(){
-    window.location.href='https://github.com/JustAcoder617';
-}
-const person=document.getElementById("person");
-person.addEventListener("click", onperson);
+const repoBtn = document.getElementById("repo");
+const personBtn = document.getElementById("person");
+
+// Função genérica para abrir links em nova aba
+const openLink = (url) => {
+    window.open(url, '_blank');
+};
+
+// Eventos
+repoBtn.addEventListener("click", () => {
+    openLink('https://github.com/JustAcoder617/Whispers-of-Condemnation/blob/main/modularization/cweb.h');
+});
+
+personBtn.addEventListener("click", () => {
+    openLink('https://github.com/JustAcoder617');
+});
