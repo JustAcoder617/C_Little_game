@@ -59,6 +59,10 @@ void jogo(char jg1[], char jg2[], char *user_login) {
         "O juiz se distrai e o martelo erra o alvo!",
         "O martelo quebrou no meio do caminho..."
     };
+    const char *frases_condenation[]={
+        "O ADVOGADO DIZ QUE O RÉU É CULPADO!",
+        "O ADVOGADO ADVESÁRIO FALA: TEMOS PROVAS SULFICIENTES!"
+    };
 
     while (jg1vivo && jg2vivo) {
         char *atual = (turno == 1) ? jg1 : jg2;
@@ -72,6 +76,8 @@ void jogo(char jg1[], char jg2[], char *user_login) {
         }
 
         if (choice == 1) {
+            int idx_frase = rand() % 2; 
+            printf("%s", frases_condenation[idx_frase]);
             printf("O martelo esta caindo");
             for(int i = 0; i < 3; i++) { 
                 printf("."); 
